@@ -1,0 +1,11 @@
+{
+  "name": "aws-sqs-tutorial",
+  "version": "0.0.0",
+  "description": "A tutorial for AWS SQS",
+  "scripts": {
+    "setup": "node sqs_setup.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.222.1"
+  }
+}
