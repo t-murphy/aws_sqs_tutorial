@@ -168,3 +168,12 @@ Now it's time to clean up the environment. It is good practice to delete any Que
 1. git checkout cleanup
 1. node sqs_cleanup.js
 1. Delete the AWS user (if you created one specifically for this) in the aws console
+
+## Application
+* Create server that will create 5 messages that are representations of API calls (i.e. source: www.example.com, api call: api.example.com/v4/createEmail, payload: { from: ‘me@gmail.com’, to: ‘you@gmail.com’, body: ‘Please come to my office Monday morning’ })
+* Create server that will pull the messages, perform the appropriate action and then delete the message if successful
+    * You can pseudo-perform the action by just calling a console.log(payload)
+* Explain the pros and cons of using an SQS queue to hold the API calls and then have another server or part of the application handle the actual execution of the API calls
+
+## Good Luck
+I hope this tutorial is helpful and good luck learning and using AWS SQS.
