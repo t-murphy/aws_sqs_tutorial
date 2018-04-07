@@ -63,6 +63,7 @@ In this tutorial we will set up an environment where you will setup a Queue that
       aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
       ```
 1. Clone this repository: git clone https://github.com/t-murphy/aws_sqs_tutorial.git
+1. git checkout setup
 1. npm install
 1. node sqs_setup.js
     1. This script creates the Queue and populates it with 5 messages using the JavaScript SDK
@@ -72,3 +73,107 @@ The JavaScript SDK allows you quickly get up and going. Here are a few reference
   1. [Actions](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/APIReference/API_Operations.html)
   1. [Configuring the SDK](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html)
   1. [Code Examples](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/sdk-code-samples.html)
+
+### Pull the Messages
+1. git checkout pull
+1. Breakdown of sqs_pullqueue.js
+Basic setup of the SDK, region and the SQS service object
+```
+// Load the AWS SDK for Node.js
+var AWS = require('aws-sdk');
+// Set the region
+AWS.config.update({region: 'us-west-2'});
+// Create SQS service object
+var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+```
+
+Next we will get the Queue that we will be working with. In the setup we created a Queue called 'Test_queue' and now we will get the URL so we can pull messages from it and delete it.
+```
+var queueParams = {
+  QueueName: 'Test_queue'
+};
+
+sqs.getQueueUrl(queueParams, function(err, data) {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    // Here we have the processMessages function that will actually do the processing once we have the QueueURL
+    processMessages(data.QueueUrl);
+  }
+});
+```
+
+Now we have the actual function. Here we are doing a lot.
+```
+var processMessages = function (queueUrl) {
+  // We create these params once so they can be used many times as we pull messages and delete them as we successfully log them
+  var params = {
+   AttributeNames: [
+      "SentTimestamp"
+   ],
+   MaxNumberOfMessages: 1,
+   MessageAttributeNames: [
+      "All"
+   ],
+   QueueUrl: queueUrl,
+   VisibilityTimeout: 0,
+   WaitTimeSeconds: 10
+  };
+
+  // import the fs module so that we can write to the 'log/log.txt' file
+  var fs = require('fs');
+
+  // A for loop to continually pull until the messages are gone.
+  // In a production environment you would either be pulling continually (and possibly long pulling) so that you can always get the messages
+  // In AWS you could scale your EC2 instances pulling the queue based on how many messages are in the queue or based on how much cpu, memory, etc. is being used on the EC2 instances
+  for (var i = 0; i < 15; i++) {
+    // We pull the messages one at a time
+    sqs.receiveMessage(params, function(err, data) {
+      if (err) {
+        // Catching the error and breaking the loop
+        return console.log("Receive Error", err);
+      } else if (data.Messages) {
+        // Write the log to the file
+        fs.appendFile("./log/log.txt", data.Messages[0].Body + "\n", function(err) {
+            if(err) {
+                console.log(err);
+            }
+
+            console.log("The message was committed to the log");
+        });
+        // Configure the deleteParams
+        var deleteParams = {
+          QueueUrl: queueUrl,
+          ReceiptHandle: data.Messages[0].ReceiptHandle
+        };
+        // Delete the messages
+        sqs.deleteMessage(deleteParams, function(err, data) {
+          if (err) {
+            console.log("Delete Error", err);
+          } else {
+            console.log("Message Deleted", data);
+          }
+        });
+      }
+    });
+  }
+}
+```
+
+We do a lot in this file and we learn a lot of actions that can be performed on a Queue. There are many more! You can refer to the available actions in the references for the SDK in the previous section.
+
+### Cleanup
+Now it's time to clean up the environment. It is good practice to delete any Queues not in use and to delete any users created for a tutorial so that you are not leaving a mess behind for either you or someone else to deal with later.
+
+1. git checkout cleanup
+1. node sqs_cleanup.js
+1. Delete the AWS user (if you created one specifically for this) in the aws console
+
+## Application
+* Create server that will create 5 messages that are representations of API calls (i.e. source: www.example.com, api call: api.example.com/v4/createEmail, payload: { from: ‘me@gmail.com’, to: ‘you@gmail.com’, body: ‘Please come to my office Monday morning’ })
+* Create server that will pull the messages, perform the appropriate action and then delete the message if successful
+    * You can pseudo-perform the action by just calling a console.log(payload)
+* Explain the pros and cons of using an SQS queue to hold the API calls and then have another server or part of the application handle the actual execution of the API calls
+
+## Good Luck
+I hope this tutorial is helpful and good luck learning and using AWS SQS.
