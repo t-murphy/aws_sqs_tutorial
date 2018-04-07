@@ -29,7 +29,8 @@ var params = {
   QueueName: 'Test_queue',
   Attributes: {
     'DelaySeconds': '60',
-    'MessageRetentionPeriod': '86400'
+    'MessageRetentionPeriod': '86400',
+    'VisibilityTimeout': '60'
   }
 };
 
