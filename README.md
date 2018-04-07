@@ -161,3 +161,10 @@ var processMessages = function (queueUrl) {
 ```
 
 We do a lot in this file and we learn a lot of actions that can be performed on a Queue. There are many more! You can refer to the available actions in the references for the SDK in the previous section.
+
+### Cleanup
+Now it's time to clean up the environment. It is good practice to delete any Queues not in use and to delete any users created for a tutorial so that you are not leaving a mess behind for either you or someone else to deal with later.
+
+1. git checkout cleanup
+1. node sqs_cleanup.js
+1. Delete the AWS user (if you created one specifically for this) in the aws console
