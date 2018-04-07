@@ -2,10 +2,17 @@
   "name": "aws-sqs-tutorial",
   "version": "0.0.0",
   "description": "A tutorial for AWS SQS",
+  "license": "Apache2",
+  "repository" :
+    { "type" : "git"
+      , "url" : "https://github.com/t-murphy/aws_sqs_tutorial.git"
+    },
   "scripts": {
-    "setup": "node sqs_setup.js"
+    "sqs_setup": "node sqs_setup.js",
+    "sqs_pull": "node sqs_pullqueue.js"
   },
   "dependencies": {
-    "aws-sdk": "^2.222.1"
+    "aws-sdk": "^2.222.1",
+    "fs": "0.0.1-security"
   }
 }
