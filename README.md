@@ -53,19 +53,19 @@ In this tutorial we will set up an environment where you will setup a Queue that
 ### Configure the Environment
 1. Install [Node.js](https://nodejs.org/)
 1. [Create a shared configuration file](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html)
-  1. Create the following file based on your OS
-    1. Linux, Unix, and macOS users: ~/.aws/credentials
-    1. Windows users: C:\Users\USER_NAME\.aws\credentials
-  1. Add credentials to configuration file:
-    ```
-    [default]
-    aws_access_key_id = <YOUR_ACCESS_KEY_ID>
-    aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
-    ```
+    1. Create the following file based on your OS
+      1. Linux, Unix, and macOS users: ~/.aws/credentials
+      1. Windows users: C:\Users\USER_NAME\.aws\credentials
+    1. Add credentials to configuration file:
+      ```
+      [default]
+      aws_access_key_id = <YOUR_ACCESS_KEY_ID>
+      aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
+      ```
 1. Clone this repository: git clone https://github.com/t-murphy/aws_sqs_tutorial.git
 1. npm install
 1. node sqs_setup.js
-  1. This script creates the Queue and populates it with 5 messages using the JavaScript SDK
+    1. This script creates the Queue and populates it with 5 messages using the JavaScript SDK
 
 ### Review of SQS SDK
 The JavaScript SDK allows you quickly get up and going. Here are a few references for more information:
